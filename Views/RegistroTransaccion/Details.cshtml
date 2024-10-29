@@ -1,54 +1,67 @@
 @model NominaAPEC.Models.RegistroTransaccion
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Registro de Transacción";
 }
 
-<h1>Details</h1>
+<h1>Detalles del Registro de Transacción</h1>
 
 <div>
-    <h4>RegistroTransaccion</h4>
+    <h4>Registro de Transacción</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EmpleadoId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EmpleadoId)
+        <dt class="col-sm-2">Empleado</dt>
+        <dd class="col-sm-10">
+            @Model.Empleado?.Nombre
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IngresoODeduccionId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IngresoODeduccionId)
+
+        <dt class="col-sm-2">Tipo de Ingreso</dt>
+        <dd class="col-sm-10">
+            @if (Model.TipoIngreso != null)
+            {
+                @Model.TipoIngreso.Nombre
+            }
+            else
+            {
+                <span>No aplica</span>
+            }
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoTransaccion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TipoTransaccion)
+
+        <dt class="col-sm-2">Tipo de Deducción</dt>
+        <dd class="col-sm-10">
+            @if (Model.TipoDeduccion != null)
+            {
+                @Model.TipoDeduccion.Nombre
+            }
+            else
+            {
+                <span>No aplica</span>
+            }
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Fecha)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Fecha)
+
+        <dt class="col-sm-2">Tipo de Transacción</dt>
+        <dd class="col-sm-10">
+            @Model.TipoTransaccion
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Monto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Monto)
+
+        <dt class="col-sm-2">Fecha</dt>
+        <dd class="col-sm-10">
+            @Model.Fecha.ToString("yyyy-MM-dd")
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
+
+        <dt class="col-sm-2">Monto</dt>
+        <dd class="col-sm-10">
+            @Model.Monto
+        </dd>
+
+        <dt class="col-sm-2">Estado</dt>
+        <dd class="col-sm-10">
+            @Model.Estado
         </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Editar</a> |
+    <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
 </div>

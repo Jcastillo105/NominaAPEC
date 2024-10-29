@@ -22,7 +22,8 @@ namespace NominaAPEC.Controllers
         // GET: AsientoContable
         public async Task<IActionResult> Index()
         {
-            return View(await _context.AsientosContables.ToListAsync());
+            var asientos = _context.AsientosContables.Include(a => a.Empleado);
+            return View(await asientos.ToListAsync());
         }
 
         // GET: AsientoContable/Details/5
@@ -34,6 +35,7 @@ namespace NominaAPEC.Controllers
             }
 
             var asientoContable = await _context.AsientosContables
+                .Include(a => a.Empleado)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (asientoContable == null)
             {
@@ -46,12 +48,11 @@ namespace NominaAPEC.Controllers
         // GET: AsientoContable/Create
         public IActionResult Create()
         {
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre");
             return View();
         }
 
         // POST: AsientoContable/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Descripcion,EmpleadoId,Cuenta,TipoMovimiento,FechaAsiento,MontoAsiento,Estado")] AsientoContable asientoContable)
@@ -62,6 +63,7 @@ namespace NominaAPEC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre", asientoContable.EmpleadoId);
             return View(asientoContable);
         }
 
@@ -78,12 +80,11 @@ namespace NominaAPEC.Controllers
             {
                 return NotFound();
             }
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre", asientoContable.EmpleadoId);
             return View(asientoContable);
         }
 
         // POST: AsientoContable/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Descripcion,EmpleadoId,Cuenta,TipoMovimiento,FechaAsiento,MontoAsiento,Estado")] AsientoContable asientoContable)
@@ -113,6 +114,7 @@ namespace NominaAPEC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre", asientoContable.EmpleadoId);
             return View(asientoContable);
         }
 
@@ -125,6 +127,7 @@ namespace NominaAPEC.Controllers
             }
 
             var asientoContable = await _context.AsientosContables
+                .Include(a => a.Empleado)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (asientoContable == null)
             {

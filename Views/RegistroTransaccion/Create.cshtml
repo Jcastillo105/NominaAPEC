@@ -4,52 +4,77 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Crear Registro de Transacción</h1>
 
-<h4>RegistroTransaccion</h4>
+<h4>Registro de Transacción</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
-                <label asp-for="EmpleadoId" class="control-label"></label>
-                <input asp-for="EmpleadoId" class="form-control" />
+                <label asp-for="EmpleadoId" class="control-label">Empleado</label>
+                <select asp-for="EmpleadoId" class="form-control" asp-items="ViewBag.EmpleadoId">
+                    <option value="">Seleccione un empleado</option>
+                </select>
                 <span asp-validation-for="EmpleadoId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="IngresoODeduccionId" class="control-label"></label>
-                <input asp-for="IngresoODeduccionId" class="form-control" />
-                <span asp-validation-for="IngresoODeduccionId" class="text-danger"></span>
+                <label asp-for="TipoIngresoId" class="control-label">Tipo de Ingreso</label>
+                <select asp-for="TipoIngresoId" class="form-control" asp-items="ViewBag.TipoIngresoId">
+                    <option value="">Seleccione un tipo de ingreso</option>
+                </select>
+                <span asp-validation-for="TipoIngresoId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="TipoTransaccion" class="control-label"></label>
-                <input asp-for="TipoTransaccion" class="form-control" />
+                <label asp-for="TipoDeduccionId" class="control-label">Tipo de Deducción</label>
+                <select asp-for="TipoDeduccionId" class="form-control" asp-items="ViewBag.TipoDeduccionId">
+                    <option value="">Seleccione un tipo de deducción</option>
+                </select>
+                <span asp-validation-for="TipoDeduccionId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TipoTransaccion" class="control-label">Tipo de Transacción</label>
+                <select asp-for="TipoTransaccion" class="form-control">
+                    <option value="">Seleccione el tipo de transacción</option>
+                    <option value="Ingreso">Ingreso</option>
+                    <option value="Deducción">Deducción</option>
+                </select>
                 <span asp-validation-for="TipoTransaccion" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Fecha" class="control-label"></label>
-                <input asp-for="Fecha" class="form-control" />
+                <input asp-for="Fecha" type="date" class="form-control" />
                 <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Monto" class="control-label"></label>
                 <input asp-for="Monto" class="form-control" />
                 <span asp-validation-for="Monto" class="text-danger"></span>
             </div>
+
             <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-                </label>
+                <input class="form-check-input" asp-for="Estado" />
+                <label class="form-check-label" asp-for="Estado"></label>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
 </div>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

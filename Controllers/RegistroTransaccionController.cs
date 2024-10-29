@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +21,11 @@ namespace NominaAPEC.Controllers
         // GET: RegistroTransaccion
         public async Task<IActionResult> Index()
         {
-            return View(await _context.RegistroTransacciones.ToListAsync());
+            var transacciones = _context.RegistroTransacciones
+                .Include(rt => rt.Empleado)
+                .Include(rt => rt.TipoIngreso)
+                .Include(rt => rt.TipoDeduccion);
+            return View(await transacciones.ToListAsync());
         }
 
         // GET: RegistroTransaccion/Details/5
@@ -34,7 +37,11 @@ namespace NominaAPEC.Controllers
             }
 
             var registroTransaccion = await _context.RegistroTransacciones
+                .Include(rt => rt.Empleado)
+                .Include(rt => rt.TipoIngreso)
+                .Include(rt => rt.TipoDeduccion)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (registroTransaccion == null)
             {
                 return NotFound();
@@ -46,15 +53,14 @@ namespace NominaAPEC.Controllers
         // GET: RegistroTransaccion/Create
         public IActionResult Create()
         {
+            CargarListas(); // Cargar listas de empleados, ingresos, deducciones y tipos de transacción
             return View();
         }
 
         // POST: RegistroTransaccion/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EmpleadoId,IngresoODeduccionId,TipoTransaccion,Fecha,Monto,Estado")] RegistroTransaccion registroTransaccion)
+        public async Task<IActionResult> Create([Bind("Id,EmpleadoId,TipoIngresoId,TipoDeduccionId,TipoTransaccion,Fecha,Monto,Estado")] RegistroTransaccion registroTransaccion)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +68,8 @@ namespace NominaAPEC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            CargarListas(registroTransaccion);
             return View(registroTransaccion);
         }
 
@@ -78,15 +86,15 @@ namespace NominaAPEC.Controllers
             {
                 return NotFound();
             }
+
+            CargarListas(registroTransaccion);
             return View(registroTransaccion);
         }
 
         // POST: RegistroTransaccion/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,EmpleadoId,IngresoODeduccionId,TipoTransaccion,Fecha,Monto,Estado")] RegistroTransaccion registroTransaccion)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,EmpleadoId,TipoIngresoId,TipoDeduccionId,TipoTransaccion,Fecha,Monto,Estado")] RegistroTransaccion registroTransaccion)
         {
             if (id != registroTransaccion.Id)
             {
@@ -113,6 +121,8 @@ namespace NominaAPEC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            CargarListas(registroTransaccion);
             return View(registroTransaccion);
         }
 
@@ -125,7 +135,11 @@ namespace NominaAPEC.Controllers
             }
 
             var registroTransaccion = await _context.RegistroTransacciones
+                .Include(rt => rt.Empleado)
+                .Include(rt => rt.TipoIngreso)
+                .Include(rt => rt.TipoDeduccion)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (registroTransaccion == null)
             {
                 return NotFound();
@@ -143,15 +157,27 @@ namespace NominaAPEC.Controllers
             if (registroTransaccion != null)
             {
                 _context.RegistroTransacciones.Remove(registroTransaccion);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool RegistroTransaccionExists(int id)
         {
             return _context.RegistroTransacciones.Any(e => e.Id == id);
+        }
+
+        // Método auxiliar para cargar listas en la vista
+        private void CargarListas(RegistroTransaccion registroTransaccion = null)
+        {
+            ViewBag.EmpleadoId = new SelectList(_context.Empleados, "Id", "Nombre", registroTransaccion?.EmpleadoId);
+            ViewBag.TipoIngresoId = new SelectList(_context.TiposIngreso, "Id", "Nombre", registroTransaccion?.TipoIngresoId);
+            ViewBag.TipoDeduccionId = new SelectList(_context.TiposDeduccion, "Id", "Nombre", registroTransaccion?.TipoDeduccionId);
+            ViewBag.TipoTransaccion = new SelectList(new[]
+            {
+                new { Value = "Ingreso", Text = "Ingreso" },
+                new { Value = "Deducción", Text = "Deducción" }
+            }, "Value", "Text", registroTransaccion?.TipoTransaccion);
         }
     }
 }
