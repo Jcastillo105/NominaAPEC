@@ -1,10 +1,10 @@
 @model NominaAPEC.Models.AsientoContable
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Asiento Contable";
 }
 
-<h1>Crear Asiento Contable</h1>
+<h1>@ViewData["Title"]</h1>
 
 <h4>Asiento Contable</h4>
 <hr />
@@ -13,12 +13,14 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+            <!-- Descripción -->
             <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
+                <label asp-for="Descripcion" class="control-label">Descripción</label>
                 <input asp-for="Descripcion" class="form-control" />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
 
+            <!-- Empleado -->
             <div class="form-group">
                 <label asp-for="EmpleadoId" class="control-label">Empleado</label>
                 <select asp-for="EmpleadoId" class="form-control" asp-items="ViewBag.EmpleadoId">
@@ -27,35 +29,45 @@
                 <span asp-validation-for="EmpleadoId" class="text-danger"></span>
             </div>
 
+            <!-- Cuenta -->
             <div class="form-group">
-                <label asp-for="Cuenta" class="control-label"></label>
+                <label asp-for="Cuenta" class="control-label">Cuenta</label>
                 <input asp-for="Cuenta" class="form-control" />
                 <span asp-validation-for="Cuenta" class="text-danger"></span>
             </div>
 
+            <!-- Tipo de Movimiento -->
             <div class="form-group">
-                <label asp-for="TipoMovimiento" class="control-label"></label>
-                <input asp-for="TipoMovimiento" class="form-control" />
+                <label asp-for="TipoMovimiento" class="control-label">Tipo de Movimiento</label>
+                <select asp-for="TipoMovimiento" class="form-control">
+                    <option value="">Seleccione el tipo de movimiento</option>
+                    <option value="DB">Débito</option>
+                    <option value="CR">Crédito</option>
+                </select>
                 <span asp-validation-for="TipoMovimiento" class="text-danger"></span>
             </div>
 
+            <!-- Fecha del Asiento -->
             <div class="form-group">
-                <label asp-for="FechaAsiento" class="control-label"></label>
+                <label asp-for="FechaAsiento" class="control-label">Fecha del Asiento</label>
                 <input asp-for="FechaAsiento" type="date" class="form-control" />
                 <span asp-validation-for="FechaAsiento" class="text-danger"></span>
             </div>
 
+            <!-- Monto del Asiento -->
             <div class="form-group">
-                <label asp-for="MontoAsiento" class="control-label"></label>
+                <label asp-for="MontoAsiento" class="control-label">Monto del Asiento</label>
                 <input asp-for="MontoAsiento" class="form-control" />
                 <span asp-validation-for="MontoAsiento" class="text-danger"></span>
             </div>
 
+            <!-- Estado -->
             <div class="form-group form-check">
                 <input class="form-check-input" asp-for="Estado" />
-                <label class="form-check-label" asp-for="Estado"></label>
+                <label class="form-check-label" asp-for="Estado">Activo</label>
             </div>
 
+            <!-- Botón de Crear -->
             <div class="form-group">
                 <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
@@ -64,7 +76,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Volver a la Lista</a>
+    <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
 </div>
 
 @section Scripts {

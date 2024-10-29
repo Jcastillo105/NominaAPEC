@@ -14,21 +14,21 @@ namespace NominaAPEC.Models
         public int EmpleadoId { get; set; }
 
         [ForeignKey("EmpleadoId")]
-        public Empleado Empleado { get; set; }
+        public Empleado? Empleado { get; set; } // Se marca como anulable
 
-        // Se agrega relación con TipoIngreso
-        public int? TipoIngresoId { get; set; }
+        // Relación con TipoIngreso
+        public int? TipoIngresoId { get; set; } // Se marca como anulable
         [ForeignKey("TipoIngresoId")]
-        public TipoIngreso TipoIngreso { get; set; }
+        public TipoIngreso? TipoIngreso { get; set; } // Se marca como anulable
 
-        // Se agrega relación con TipoDeduccion
-        public int? TipoDeduccionId { get; set; }
+        // Relación con TipoDeduccion
+        public int? TipoDeduccionId { get; set; } // Se marca como anulable
         [ForeignKey("TipoDeduccionId")]
-        public TipoDeduccion TipoDeduccion { get; set; }
+        public TipoDeduccion? TipoDeduccion { get; set; } // Se marca como anulable
 
         [Required]
         [Display(Name = "Tipo de Transacción")]
-        public string TipoTransaccion { get; set; } // Ej: "Ingreso" o "Deducción"
+        public string TipoTransaccion { get; set; } = string.Empty; // Se inicializa como vacío
 
         [Required]
         public DateTime Fecha { get; set; }

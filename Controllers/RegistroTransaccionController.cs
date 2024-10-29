@@ -33,6 +33,7 @@ namespace NominaAPEC.Controllers
         {
             if (id == null)
             {
+                Console.WriteLine("Error en Details: ID es null.");
                 return NotFound();
             }
 
@@ -44,8 +45,20 @@ namespace NominaAPEC.Controllers
 
             if (registroTransaccion == null)
             {
+                Console.WriteLine($"Error en Details: No se encontró el registro con ID {id}.");
                 return NotFound();
             }
+
+            Console.WriteLine("----- Debugging de los valores obtenidos en Details -----");
+            Console.WriteLine($"ID: {registroTransaccion.Id}");
+            Console.WriteLine($"Empleado: {registroTransaccion.Empleado?.Nombre}");
+            Console.WriteLine($"Tipo de Ingreso: {registroTransaccion.TipoIngreso?.Nombre}");
+            Console.WriteLine($"Tipo de Deducción: {registroTransaccion.TipoDeduccion?.Nombre}");
+            Console.WriteLine($"Tipo de Transacción: {registroTransaccion.TipoTransaccion}");
+            Console.WriteLine($"Fecha: {registroTransaccion.Fecha}");
+            Console.WriteLine($"Monto: {registroTransaccion.Monto}");
+            Console.WriteLine($"Estado: {registroTransaccion.Estado}");
+            Console.WriteLine("--------------------------------------------------------");
 
             return View(registroTransaccion);
         }
@@ -53,24 +66,41 @@ namespace NominaAPEC.Controllers
         // GET: RegistroTransaccion/Create
         public IActionResult Create()
         {
-            CargarListas(); // Cargar listas de empleados, ingresos, deducciones y tipos de transacción
+            CargarListas();
             return View();
         }
 
         // POST: RegistroTransaccion/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EmpleadoId,TipoIngresoId,TipoDeduccionId,TipoTransaccion,Fecha,Monto,Estado")] RegistroTransaccion registroTransaccion)
+        public async Task<IActionResult> Create([Bind("EmpleadoId,TipoIngresoId,TipoDeduccionId,TipoTransaccion,Fecha,Monto,Estado")] RegistroTransaccion registroTransaccion)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                    Console.WriteLine($"Error de validación en Create: {error.ErrorMessage}");
+                }
+
+                CargarListas(registroTransaccion);
+                return View(registroTransaccion);
+            }
+
+            try
             {
                 _context.Add(registroTransaccion);
                 await _context.SaveChangesAsync();
+                Console.WriteLine("Registro de transacción creado exitosamente.");
                 return RedirectToAction(nameof(Index));
             }
-
-            CargarListas(registroTransaccion);
-            return View(registroTransaccion);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al crear el registro de transacción: {ex.Message}");
+                ModelState.AddModelError(string.Empty, "Ocurrió un error al crear el registro de transacción.");
+                CargarListas(registroTransaccion);
+                return View(registroTransaccion);
+            }
         }
 
         // GET: RegistroTransaccion/Edit/5
@@ -78,12 +108,14 @@ namespace NominaAPEC.Controllers
         {
             if (id == null)
             {
+                Console.WriteLine("Error en Edit: ID es null.");
                 return NotFound();
             }
 
             var registroTransaccion = await _context.RegistroTransacciones.FindAsync(id);
             if (registroTransaccion == null)
             {
+                Console.WriteLine($"Error en Edit: No se encontró el registro con ID {id}.");
                 return NotFound();
             }
 
@@ -98,32 +130,48 @@ namespace NominaAPEC.Controllers
         {
             if (id != registroTransaccion.Id)
             {
+                Console.WriteLine("Error en Edit: ID no coincide.");
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
                 {
-                    _context.Update(registroTransaccion);
-                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"Error de validación en Edit: {error.ErrorMessage}");
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RegistroTransaccionExists(registroTransaccion.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+
+                CargarListas(registroTransaccion);
+                return View(registroTransaccion);
             }
 
-            CargarListas(registroTransaccion);
-            return View(registroTransaccion);
+            try
+            {
+                _context.Update(registroTransaccion);
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Registro de transacción editado exitosamente.");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RegistroTransaccionExists(registroTransaccion.Id))
+                {
+                    Console.WriteLine("Error de concurrencia en la edición del registro de transacción.");
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al editar el registro de transacción: {ex.Message}");
+                ModelState.AddModelError(string.Empty, "Ocurrió un error al editar el registro de transacción.");
+                CargarListas(registroTransaccion);
+                return View(registroTransaccion);
+            }
         }
 
         // GET: RegistroTransaccion/Delete/5
@@ -131,6 +179,7 @@ namespace NominaAPEC.Controllers
         {
             if (id == null)
             {
+                Console.WriteLine("Error en Delete: ID es null.");
                 return NotFound();
             }
 
@@ -142,6 +191,7 @@ namespace NominaAPEC.Controllers
 
             if (registroTransaccion == null)
             {
+                Console.WriteLine($"Error en Delete: No se encontró el registro con ID {id}.");
                 return NotFound();
             }
 
@@ -153,12 +203,28 @@ namespace NominaAPEC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var registroTransaccion = await _context.RegistroTransacciones.FindAsync(id);
-            if (registroTransaccion != null)
+            try
             {
-                _context.RegistroTransacciones.Remove(registroTransaccion);
-                await _context.SaveChangesAsync();
+                var registroTransaccion = await _context.RegistroTransacciones.FindAsync(id);
+                if (registroTransaccion != null)
+                {
+                    _context.RegistroTransacciones.Remove(registroTransaccion);
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine("Registro de transacción eliminado exitosamente.");
+                }
+                else
+                {
+                    Console.WriteLine($"Error en DeleteConfirmed: No se encontró el registro con ID {id}.");
+                    return NotFound();
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar el registro de transacción: {ex.Message}");
+                ModelState.AddModelError(string.Empty, "Ocurrió un error al eliminar el registro de transacción.");
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -167,8 +233,7 @@ namespace NominaAPEC.Controllers
             return _context.RegistroTransacciones.Any(e => e.Id == id);
         }
 
-        // Método auxiliar para cargar listas en la vista
-        private void CargarListas(RegistroTransaccion registroTransaccion = null)
+        private void CargarListas(RegistroTransaccion? registroTransaccion = null)
         {
             ViewBag.EmpleadoId = new SelectList(_context.Empleados, "Id", "Nombre", registroTransaccion?.EmpleadoId);
             ViewBag.TipoIngresoId = new SelectList(_context.TiposIngreso, "Id", "Nombre", registroTransaccion?.TipoIngresoId);

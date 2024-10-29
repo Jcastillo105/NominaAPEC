@@ -1,7 +1,7 @@
 @model NominaAPEC.Models.RegistroTransaccion
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Registro de Transacción";
 }
 
 <h1>Crear Registro de Transacción</h1>
@@ -13,6 +13,7 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+            <!-- Selección de Empleado -->
             <div class="form-group">
                 <label asp-for="EmpleadoId" class="control-label">Empleado</label>
                 <select asp-for="EmpleadoId" class="form-control" asp-items="ViewBag.EmpleadoId">
@@ -21,7 +22,8 @@
                 <span asp-validation-for="EmpleadoId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <!-- Selección de Tipo de Ingreso -->
+            <div class="form-group" id="tipoIngresoSection">
                 <label asp-for="TipoIngresoId" class="control-label">Tipo de Ingreso</label>
                 <select asp-for="TipoIngresoId" class="form-control" asp-items="ViewBag.TipoIngresoId">
                     <option value="">Seleccione un tipo de ingreso</option>
@@ -29,7 +31,8 @@
                 <span asp-validation-for="TipoIngresoId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <!-- Selección de Tipo de Deducción -->
+            <div class="form-group" id="tipoDeduccionSection">
                 <label asp-for="TipoDeduccionId" class="control-label">Tipo de Deducción</label>
                 <select asp-for="TipoDeduccionId" class="form-control" asp-items="ViewBag.TipoDeduccionId">
                     <option value="">Seleccione un tipo de deducción</option>
@@ -37,9 +40,10 @@
                 <span asp-validation-for="TipoDeduccionId" class="text-danger"></span>
             </div>
 
+            <!-- Selección de Tipo de Transacción -->
             <div class="form-group">
                 <label asp-for="TipoTransaccion" class="control-label">Tipo de Transacción</label>
-                <select asp-for="TipoTransaccion" class="form-control">
+                <select asp-for="TipoTransaccion" class="form-control" id="tipoTransaccionSelect">
                     <option value="">Seleccione el tipo de transacción</option>
                     <option value="Ingreso">Ingreso</option>
                     <option value="Deducción">Deducción</option>
@@ -47,23 +51,27 @@
                 <span asp-validation-for="TipoTransaccion" class="text-danger"></span>
             </div>
 
+            <!-- Campo de Fecha -->
             <div class="form-group">
-                <label asp-for="Fecha" class="control-label"></label>
+                <label asp-for="Fecha" class="control-label">Fecha</label>
                 <input asp-for="Fecha" type="date" class="form-control" />
                 <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
 
+            <!-- Campo de Monto -->
             <div class="form-group">
-                <label asp-for="Monto" class="control-label"></label>
+                <label asp-for="Monto" class="control-label">Monto</label>
                 <input asp-for="Monto" class="form-control" />
                 <span asp-validation-for="Monto" class="text-danger"></span>
             </div>
 
+            <!-- Estado -->
             <div class="form-group form-check">
                 <input class="form-check-input" asp-for="Estado" />
-                <label class="form-check-label" asp-for="Estado"></label>
+                <label class="form-check-label" asp-for="Estado">Activo</label>
             </div>
 
+            <!-- Botón de Crear -->
             <div class="form-group">
                 <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
@@ -77,4 +85,31 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Ocultar/mostrar secciones según el tipo de transacción seleccionado
+        $(document).ready(function () {
+            function toggleSections() {
+                var tipoTransaccion = $('#tipoTransaccionSelect').val();
+                if (tipoTransaccion === "Ingreso") {
+                    $('#tipoIngresoSection').show();
+                    $('#tipoDeduccionSection').hide();
+                } else if (tipoTransaccion === "Deducción") {
+                    $('#tipoIngresoSection').hide();
+                    $('#tipoDeduccionSection').show();
+                } else {
+                    $('#tipoIngresoSection').hide();
+                    $('#tipoDeduccionSection').hide();
+                }
+            }
+
+            // Inicializa las secciones según el valor seleccionado
+            toggleSections();
+
+            // Cambia la visibilidad al cambiar el tipo de transacción
+            $('#tipoTransaccionSelect').change(function () {
+                toggleSections();
+            });
+        });
+    </script>
 }

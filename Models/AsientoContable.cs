@@ -9,34 +9,34 @@ namespace NominaAPEC.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        public string Descripcion { get; set; }
+        [Required(ErrorMessage = "La descripción es obligatoria.")]
+        public string Descripcion { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "El empleado es obligatorio.")]
         [Display(Name = "Empleado")]
         public int EmpleadoId { get; set; }
 
         // Relación con el modelo Empleado
         [ForeignKey("EmpleadoId")]
-        public Empleado Empleado { get; set; }
+        public Empleado? Empleado { get; set; }
 
-        [Required]
-        public string Cuenta { get; set; }
+        [Required(ErrorMessage = "La cuenta es obligatoria.")]
+        public string Cuenta { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "El tipo de movimiento es obligatorio.")]
         [Display(Name = "Tipo de Movimiento")]
-        public string TipoMovimiento { get; set; } // Ej: "DB" (Débito) o "CR" (Crédito)
+        public string TipoMovimiento { get; set; } = string.Empty; // Ej: "DB" (Débito) o "CR" (Crédito)
 
-        [Required]
+        [Required(ErrorMessage = "La fecha del asiento es obligatoria.")]
         [Display(Name = "Fecha del Asiento")]
         public DateTime FechaAsiento { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El monto del asiento es obligatorio.")]
         [Display(Name = "Monto del Asiento")]
         [Range(0, double.MaxValue, ErrorMessage = "El monto debe ser un número positivo.")]
         public decimal MontoAsiento { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El estado es obligatorio.")]
         public bool Estado { get; set; }
     }
 }
