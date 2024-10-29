@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NominaAPEC.Data;
 using NominaAPEC.Models;
@@ -35,6 +33,7 @@ namespace NominaAPEC.Controllers
 
             var tipoIngreso = await _context.TiposIngreso
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (tipoIngreso == null)
             {
                 return NotFound();
@@ -50,17 +49,23 @@ namespace NominaAPEC.Controllers
         }
 
         // POST: TipoIngreso/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,DependeDeSalario,Estado")] TipoIngreso tipoIngreso)
+        public async Task<IActionResult> Create(TipoIngreso tipoIngreso)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tipoIngreso);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(tipoIngreso);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Tipo de Ingreso creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, "Ocurrió un error al crear el Tipo de Ingreso: " + ex.Message);
+                }
             }
             return View(tipoIngreso);
         }
@@ -78,15 +83,14 @@ namespace NominaAPEC.Controllers
             {
                 return NotFound();
             }
+
             return View(tipoIngreso);
         }
 
         // POST: TipoIngreso/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,DependeDeSalario,Estado")] TipoIngreso tipoIngreso)
+        public async Task<IActionResult> Edit(int id, TipoIngreso tipoIngreso)
         {
             if (id != tipoIngreso.Id)
             {
@@ -99,6 +103,8 @@ namespace NominaAPEC.Controllers
                 {
                     _context.Update(tipoIngreso);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Tipo de Ingreso actualizado exitosamente.";
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -108,10 +114,13 @@ namespace NominaAPEC.Controllers
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError(string.Empty, "Error al actualizar el Tipo de Ingreso.");
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, "Ocurrió un error al actualizar el Tipo de Ingreso: " + ex.Message);
+                }
             }
             return View(tipoIngreso);
         }
@@ -139,13 +148,21 @@ namespace NominaAPEC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tipoIngreso = await _context.TiposIngreso.FindAsync(id);
-            if (tipoIngreso != null)
+            try
             {
-                _context.TiposIngreso.Remove(tipoIngreso);
+                var tipoIngreso = await _context.TiposIngreso.FindAsync(id);
+                if (tipoIngreso != null)
+                {
+                    _context.TiposIngreso.Remove(tipoIngreso);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Tipo de Ingreso eliminado exitosamente.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al eliminar el Tipo de Ingreso: " + ex.Message;
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

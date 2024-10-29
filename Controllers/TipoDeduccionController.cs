@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NominaAPEC.Data;
 using NominaAPEC.Models;
@@ -35,6 +33,7 @@ namespace NominaAPEC.Controllers
 
             var tipoDeduccion = await _context.TiposDeduccion
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (tipoDeduccion == null)
             {
                 return NotFound();
@@ -50,17 +49,23 @@ namespace NominaAPEC.Controllers
         }
 
         // POST: TipoDeduccion/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,DependeDeSalario,Estado")] TipoDeduccion tipoDeduccion)
+        public async Task<IActionResult> Create(TipoDeduccion tipoDeduccion)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tipoDeduccion);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(tipoDeduccion);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Tipo de Deducción creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, "Ocurrió un error al crear el Tipo de Deducción: " + ex.Message);
+                }
             }
             return View(tipoDeduccion);
         }
@@ -78,15 +83,14 @@ namespace NominaAPEC.Controllers
             {
                 return NotFound();
             }
+
             return View(tipoDeduccion);
         }
 
         // POST: TipoDeduccion/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,DependeDeSalario,Estado")] TipoDeduccion tipoDeduccion)
+        public async Task<IActionResult> Edit(int id, TipoDeduccion tipoDeduccion)
         {
             if (id != tipoDeduccion.Id)
             {
@@ -99,6 +103,8 @@ namespace NominaAPEC.Controllers
                 {
                     _context.Update(tipoDeduccion);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Tipo de Deducción actualizado exitosamente.";
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -108,10 +114,13 @@ namespace NominaAPEC.Controllers
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError(string.Empty, "Error al actualizar el Tipo de Deducción.");
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, "Ocurrió un error al actualizar el Tipo de Deducción: " + ex.Message);
+                }
             }
             return View(tipoDeduccion);
         }
@@ -139,13 +148,21 @@ namespace NominaAPEC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tipoDeduccion = await _context.TiposDeduccion.FindAsync(id);
-            if (tipoDeduccion != null)
+            try
             {
-                _context.TiposDeduccion.Remove(tipoDeduccion);
+                var tipoDeduccion = await _context.TiposDeduccion.FindAsync(id);
+                if (tipoDeduccion != null)
+                {
+                    _context.TiposDeduccion.Remove(tipoDeduccion);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Tipo de Deducción eliminado exitosamente.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al eliminar el Tipo de Deducción: " + ex.Message;
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

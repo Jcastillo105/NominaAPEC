@@ -1,40 +1,43 @@
 @model NominaAPEC.Models.TipoDeduccion
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Tipo de Deducción";
 }
 
-<h1>Create</h1>
+<h2>@ViewData["Title"]</h2>
 
-<h4>TipoDeduccion</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
+                <label asp-for="Nombre" class="control-label">Nombre</label>
                 <input asp-for="Nombre" class="form-control" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
+
             <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="DependeDeSalario" /> @Html.DisplayNameFor(model => model.DependeDeSalario)
-                </label>
+                <input class="form-check-input" asp-for="DependeDeSalario" />
+                <label class="form-check-label" asp-for="DependeDeSalario">Depende del Salario</label>
+                <span asp-validation-for="DependeDeSalario" class="text-danger"></span>
             </div>
+
             <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-                </label>
+                <input class="form-check-input" asp-for="Estado" />
+                <label class="form-check-label" asp-for="Estado">Activo</label>
+                <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

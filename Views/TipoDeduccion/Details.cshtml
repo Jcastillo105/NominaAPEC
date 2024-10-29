@@ -1,36 +1,39 @@
 @model NominaAPEC.Models.TipoDeduccion
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Tipo de Deducción";
 }
 
-<h1>Details</h1>
+<h2>@ViewData["Title"]</h2>
 
 <div>
-    <h4>TipoDeduccion</h4>
+    <h4>Información del Tipo de Deducción</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
+        <dt class="col-sm-2">
+            Nombre
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
+        <dd class="col-sm-10">
+            @Model?.Nombre
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DependeDeSalario)
+
+        <dt class="col-sm-2">
+            Depende de Salario
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DependeDeSalario)
+        <dd class="col-sm-10">
+            @(Model?.DependeDeSalario == true ? "Sí" : "No")
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
+
+        <dt class="col-sm-2">
+            Estado
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
+        <dd class="col-sm-10">
+            @(Model?.Estado == true ? "Activo" : "Inactivo")
         </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
 </div>

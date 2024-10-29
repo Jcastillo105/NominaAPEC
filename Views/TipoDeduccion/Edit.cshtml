@@ -1,41 +1,50 @@
 @model NominaAPEC.Models.TipoDeduccion
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Tipo de Deducción";
 }
 
-<h1>Edit</h1>
+<h2>@ViewData["Title"]</h2>
 
-<h4>TipoDeduccion</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+
+            <!-- Campo de Nombre -->
             <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
+                <label asp-for="Nombre" class="control-label">Nombre</label>
                 <input asp-for="Nombre" class="form-control" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
+
+            <!-- Campo de Depende de Salario -->
             <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="DependeDeSalario" /> @Html.DisplayNameFor(model => model.DependeDeSalario)
+                <input class="form-check-input" asp-for="DependeDeSalario" />
+                <label class="form-check-label" asp-for="DependeDeSalario">
+                    ¿Depende del Salario?
                 </label>
             </div>
+
+            <!-- Campo de Estado -->
             <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
+                <input class="form-check-input" asp-for="Estado" />
+                <label class="form-check-label" asp-for="Estado">
+                    ¿Está Activo?
                 </label>
             </div>
+
+            <!-- Botón de Guardar -->
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
