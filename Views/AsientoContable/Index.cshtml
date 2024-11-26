@@ -13,13 +13,13 @@
 <table class="table table-bordered table-striped">
     <thead class="thead-dark">
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
-            <th>@Html.DisplayNameFor(model => model.Empleado.Nombre)</th>
-            <th>@Html.DisplayNameFor(model => model.Cuenta)</th>
-            <th>@Html.DisplayNameFor(model => model.TipoMovimiento)</th>
-            <th>@Html.DisplayNameFor(model => model.FechaAsiento)</th>
-            <th>@Html.DisplayNameFor(model => model.MontoAsiento)</th>
-            <th>@Html.DisplayNameFor(model => model.Estado)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Descripcion)</th>
+            <th>@Html.DisplayNameFor(model => model.First().IdAuxiliar)</th>
+            <th>@Html.DisplayNameFor(model => model.First().CuentaDB)</th>
+            <th>@Html.DisplayNameFor(model => model.First().CuentaCR)</th>
+            <th>@Html.DisplayNameFor(model => model.First().FechaAsiento)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Monto)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Estado)</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -28,11 +28,11 @@
         {
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
-                <td>@Html.DisplayFor(modelItem => item.Empleado.Nombre)</td>
-                <td>@Html.DisplayFor(modelItem => item.Cuenta)</td>
-                <td>@Html.DisplayFor(modelItem => item.TipoMovimiento)</td>
-                <td>@Html.DisplayFor(modelItem => item.FechaAsiento)</td>
-                <td>@Html.DisplayFor(modelItem => item.MontoAsiento)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdAuxiliar)</td>
+                <td>@Html.DisplayFor(modelItem => item.CuentaDB)</td>
+                <td>@Html.DisplayFor(modelItem => item.CuentaCR)</td>
+                <td>@Html.DisplayFor(modelItem => item.FechaAsiento.ToString("yyyy-MM-dd HH:mm"))</td>
+                <td>@Html.DisplayFor(modelItem => item.Monto)</td>
                 <td>
                     @if (item.Estado)
                     {

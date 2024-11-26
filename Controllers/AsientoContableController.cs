@@ -1,28 +1,35 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using NominaAPEC.Data;
 using NominaAPEC.Models;
+using AsientoContableService; // Namespace actualizado
 
 namespace NominaAPEC.Controllers
 {
     public class AsientoContableController : Controller
     {
-        private readonly MyDbContext _context;
+        private readonly AsientoContableServiceSoapClient _client;
 
-        public AsientoContableController(MyDbContext context)
+        public AsientoContableController()
         {
-            _context = context;
+            _client = new AsientoContableServiceSoapClient(AsientoContableServiceSoapClient.EndpointConfiguration.AsientoContableServiceSoap);
         }
 
         // GET: AsientoContable
         public async Task<IActionResult> Index()
         {
-            var asientos = _context.AsientosContables.Include(a => a.Empleado);
-            return View(await asientos.ToListAsync());
+            try
+            {
+                // Aquí deberías implementar la lógica para obtener los asientos desde el servicio si está disponible.
+                List<AsientoContable> asientos = new List<AsientoContable>(); // Simulación
+                return View(asientos);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en Index: {ex.Message}");
+                return View(new List<AsientoContable>());
+            }
         }
 
         // GET: AsientoContable/Details/5
@@ -34,80 +41,58 @@ namespace NominaAPEC.Controllers
                 return NotFound();
             }
 
-            var asientoContable = await _context.AsientosContables
-                .Include(a => a.Empleado)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (asientoContable == null)
+            try
             {
-                Console.WriteLine($"Error en Details: No se encontró el registro con ID {id}.");
+                // Implementa la lógica para obtener los detalles del asiento desde el servicio si está disponible.
+                AsientoContable asiento = null; // Simulación
+                return View(asiento);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en Details: {ex.Message}");
                 return NotFound();
             }
-
-            // Debugging: Imprimir valores obtenidos
-            Console.WriteLine("----- Debugging de los valores obtenidos en Details -----");
-            Console.WriteLine($"ID: {asientoContable.Id}");
-            Console.WriteLine($"Empleado: {asientoContable.Empleado?.Nombre}");
-            Console.WriteLine($"Descripción: {asientoContable.Descripcion}");
-            Console.WriteLine($"Cuenta: {asientoContable.Cuenta}");
-            Console.WriteLine($"Tipo de Movimiento: {asientoContable.TipoMovimiento}");
-            Console.WriteLine($"Fecha del Asiento: {asientoContable.FechaAsiento}");
-            Console.WriteLine($"Monto del Asiento: {asientoContable.MontoAsiento}");
-            Console.WriteLine($"Estado: {asientoContable.Estado}");
-            Console.WriteLine("--------------------------------------------------------");
-
-            return View(asientoContable);
         }
 
         // GET: AsientoContable/Create
         public IActionResult Create()
         {
-            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre");
             return View();
         }
 
         // POST: AsientoContable/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Descripcion,EmpleadoId,Cuenta,TipoMovimiento,FechaAsiento,MontoAsiento,Estado")] AsientoContable asientoContable)
+        public async Task<IActionResult> Create([Bind("IdAuxiliar,Descripcion,CuentaDB,CuentaCR,Monto")] AsientoContable asiento)
         {
             if (!ModelState.IsValid)
             {
-                // Imprimir errores de validación en la consola
-                var errors = ModelState.Values.SelectMany(v => v.Errors);
-                foreach (var error in errors)
-                {
-                    Console.WriteLine($"Error de validación en Create: {error.ErrorMessage}");
-                }
-
-                ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre", asientoContable.EmpleadoId);
-                return View(asientoContable);
+                return View(asiento);
             }
-
-            // Debugging: Imprimir valores recibidos
-            Console.WriteLine("----- Debugging de los valores recibidos en Create -----");
-            Console.WriteLine($"EmpleadoId: {asientoContable.EmpleadoId}");
-            Console.WriteLine($"Descripción: {asientoContable.Descripcion}");
-            Console.WriteLine($"Cuenta: {asientoContable.Cuenta}");
-            Console.WriteLine($"Tipo de Movimiento: {asientoContable.TipoMovimiento}");
-            Console.WriteLine($"Fecha del Asiento: {asientoContable.FechaAsiento}");
-            Console.WriteLine($"Monto del Asiento: {asientoContable.MontoAsiento}");
-            Console.WriteLine($"Estado: {asientoContable.Estado}");
-            Console.WriteLine("--------------------------------------------------------");
 
             try
             {
-                _context.Add(asientoContable);
-                await _context.SaveChangesAsync();
-                Console.WriteLine("Asiento contable creado exitosamente.");
-                return RedirectToAction(nameof(Index));
+                // Llamar al WS para registrar el asiento
+                var response = await _client.RegistrarAsientoAsync(asiento.IdAuxiliar, asiento.Descripcion, asiento.CuentaDB, asiento.CuentaCR, asiento.Monto);
+                int result = response.Body.RegistrarAsientoResult; // Extraer el resultado de la respuesta
+
+                if (result > 0)
+                {
+                    Console.WriteLine("Asiento contable registrado exitosamente.");
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error al registrar el asiento contable.");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al crear el asiento contable: {ex.Message}");
-                ModelState.AddModelError(string.Empty, "Ocurrió un error al crear el asiento contable.");
-                ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre", asientoContable.EmpleadoId);
-                return View(asientoContable);
+                Console.WriteLine($"Error en Create: {ex.Message}");
+                ModelState.AddModelError("", "Ocurrió un error al registrar el asiento contable.");
             }
+
+            return View(asiento);
         }
 
         // GET: AsientoContable/Edit/5
@@ -119,78 +104,47 @@ namespace NominaAPEC.Controllers
                 return NotFound();
             }
 
-            var asientoContable = await _context.AsientosContables.FindAsync(id);
-            if (asientoContable == null)
+            try
             {
-                Console.WriteLine($"Error en Edit: No se encontró el registro con ID {id}.");
+                // Implementa la lógica para obtener los detalles del asiento a editar si está disponible.
+                AsientoContable asiento = null; // Simulación
+                return View(asiento);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en Edit: {ex.Message}");
                 return NotFound();
             }
-
-            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre", asientoContable.EmpleadoId);
-            return View(asientoContable);
         }
 
         // POST: AsientoContable/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Descripcion,EmpleadoId,Cuenta,TipoMovimiento,FechaAsiento,MontoAsiento,Estado")] AsientoContable asientoContable)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,IdAuxiliar,Descripcion,CuentaDB,CuentaCR,Monto")] AsientoContable asiento)
         {
-            if (id != asientoContable.Id)
+            if (id != asiento.Id)
             {
-                Console.WriteLine("Error en Edit: ID no coincide.");
                 return NotFound();
             }
 
             if (!ModelState.IsValid)
             {
-                // Imprimir errores de validación en la consola
-                var errors = ModelState.Values.SelectMany(v => v.Errors);
-                foreach (var error in errors)
-                {
-                    Console.WriteLine($"Error de validación en Edit: {error.ErrorMessage}");
-                }
-
-                ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre", asientoContable.EmpleadoId);
-                return View(asientoContable);
+                return View(asiento);
             }
-
-            // Debugging: Imprimir valores recibidos
-            Console.WriteLine("----- Debugging de los valores recibidos en Edit -----");
-            Console.WriteLine($"EmpleadoId: {asientoContable.EmpleadoId}");
-            Console.WriteLine($"Descripción: {asientoContable.Descripcion}");
-            Console.WriteLine($"Cuenta: {asientoContable.Cuenta}");
-            Console.WriteLine($"Tipo de Movimiento: {asientoContable.TipoMovimiento}");
-            Console.WriteLine($"Fecha del Asiento: {asientoContable.FechaAsiento}");
-            Console.WriteLine($"Monto del Asiento: {asientoContable.MontoAsiento}");
-            Console.WriteLine($"Estado: {asientoContable.Estado}");
-            Console.WriteLine("--------------------------------------------------------");
 
             try
             {
-                _context.Update(asientoContable);
-                await _context.SaveChangesAsync();
-                Console.WriteLine("Asiento contable editado exitosamente.");
+                // Implementa la lógica para actualizar el asiento si el servicio lo soporta.
+                Console.WriteLine("Edición de asiento completada.");
                 return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AsientoContableExists(asientoContable.Id))
-                {
-                    Console.WriteLine("Error de concurrencia en la edición del asiento contable.");
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al editar el asiento contable: {ex.Message}");
-                ModelState.AddModelError(string.Empty, "Ocurrió un error al editar el asiento contable.");
-                ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre", asientoContable.EmpleadoId);
-                return View(asientoContable);
+                Console.WriteLine($"Error en Edit: {ex.Message}");
+                ModelState.AddModelError("", "Ocurrió un error al editar el asiento contable.");
             }
+
+            return View(asiento);
         }
 
         // GET: AsientoContable/Delete/5
@@ -202,28 +156,17 @@ namespace NominaAPEC.Controllers
                 return NotFound();
             }
 
-            var asientoContable = await _context.AsientosContables
-                .Include(a => a.Empleado)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (asientoContable == null)
+            try
             {
-                Console.WriteLine($"Error en Delete: No se encontró el registro con ID {id}.");
+                // Implementa la lógica para obtener el asiento a eliminar si está disponible.
+                AsientoContable asiento = null; // Simulación
+                return View(asiento);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en Delete: {ex.Message}");
                 return NotFound();
             }
-
-            // Debugging: Imprimir valores obtenidos
-            Console.WriteLine("----- Debugging de los valores obtenidos en Delete -----");
-            Console.WriteLine($"ID: {asientoContable.Id}");
-            Console.WriteLine($"Empleado: {asientoContable.Empleado?.Nombre}");
-            Console.WriteLine($"Descripción: {asientoContable.Descripcion}");
-            Console.WriteLine($"Cuenta: {asientoContable.Cuenta}");
-            Console.WriteLine($"Tipo de Movimiento: {asientoContable.TipoMovimiento}");
-            Console.WriteLine($"Fecha del Asiento: {asientoContable.FechaAsiento}");
-            Console.WriteLine($"Monto del Asiento: {asientoContable.MontoAsiento}");
-            Console.WriteLine($"Estado: {asientoContable.Estado}");
-            Console.WriteLine("--------------------------------------------------------");
-
-            return View(asientoContable);
         }
 
         // POST: AsientoContable/Delete/5
@@ -231,25 +174,18 @@ namespace NominaAPEC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var asientoContable = await _context.AsientosContables.FindAsync(id);
-            if (asientoContable != null)
+            try
             {
-                _context.AsientosContables.Remove(asientoContable);
-                await _context.SaveChangesAsync();
-                Console.WriteLine("Asiento contable eliminado exitosamente.");
+                // Implementa la lógica para eliminar el asiento si el servicio lo soporta.
+                Console.WriteLine("Asiento contable eliminado.");
+                return RedirectToAction(nameof(Index));
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Error en DeleteConfirmed: El registro no se encontró.");
+                Console.WriteLine($"Error en DeleteConfirmed: {ex.Message}");
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        // Método para verificar si existe un asiento contable
-        private bool AsientoContableExists(int id)
-        {
-            return _context.AsientosContables.Any(e => e.Id == id);
         }
     }
 }

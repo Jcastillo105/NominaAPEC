@@ -1,63 +1,76 @@
 @model NominaAPEC.Models.AsientoContable
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Asiento Contable";
 }
 
-<h1>Delete</h1>
+<h1>@ViewData["Title"]</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>¿Estás seguro de que deseas eliminar este asiento contable?</h3>
 <div>
-    <h4>AsientoContable</h4>
+    <h4>Detalles del Asiento Contable</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <!-- Descripción -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Descripcion)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Descripcion)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EmpleadoId)
+
+        <!-- ID Auxiliar -->
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdAuxiliar)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EmpleadoId)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdAuxiliar)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cuenta)
+
+        <!-- Cuenta DB -->
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CuentaDB)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cuenta)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CuentaDB)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoMovimiento)
+
+        <!-- Cuenta CR -->
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CuentaCR)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TipoMovimiento)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CuentaCR)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- Fecha del Asiento -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.FechaAsiento)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaAsiento)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FechaAsiento.ToString("yyyy-MM-dd HH:mm"))
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MontoAsiento)
+
+        <!-- Monto -->
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Monto)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MontoAsiento)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Monto)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- Estado -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Estado)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
+        <dd class="col-sm-10">
+            @(Model.Estado ? "Activo" : "Inactivo")
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
+
+    <form asp-action="DeleteConfirmed">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
     </form>
 </div>

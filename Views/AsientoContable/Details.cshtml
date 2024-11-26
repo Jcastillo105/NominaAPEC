@@ -18,28 +18,28 @@
             @Html.DisplayFor(model => model.Descripcion)
         </dd>
 
-        <!-- Nombre del Empleado -->
+        <!-- ID Auxiliar -->
         <dt class="col-sm-2">
-            Empleado
+            @Html.DisplayNameFor(model => model.IdAuxiliar)
         </dt>
         <dd class="col-sm-10">
-            @Model.Empleado?.Nombre
+            @Html.DisplayFor(model => model.IdAuxiliar)
         </dd>
 
-        <!-- Cuenta -->
+        <!-- Cuenta DB -->
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Cuenta)
+            @Html.DisplayNameFor(model => model.CuentaDB)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Cuenta)
+            @Html.DisplayFor(model => model.CuentaDB)
         </dd>
 
-        <!-- Tipo de Movimiento -->
+        <!-- Cuenta CR -->
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoMovimiento)
+            @Html.DisplayNameFor(model => model.CuentaCR)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TipoMovimiento)
+            @Html.DisplayFor(model => model.CuentaCR)
         </dd>
 
         <!-- Fecha del Asiento -->
@@ -47,15 +47,15 @@
             @Html.DisplayNameFor(model => model.FechaAsiento)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FechaAsiento)
+            @Html.DisplayFor(model => model.FechaAsiento.ToString("yyyy-MM-dd HH:mm"))
         </dd>
 
-        <!-- Monto del Asiento -->
+        <!-- Monto -->
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MontoAsiento)
+            @Html.DisplayNameFor(model => model.Monto)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MontoAsiento)
+            @Html.DisplayFor(model => model.Monto)
         </dd>
 
         <!-- Estado -->
