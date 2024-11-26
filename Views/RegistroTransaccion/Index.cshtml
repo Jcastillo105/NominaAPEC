@@ -13,13 +13,13 @@
 <table class="table">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Empleado.Nombre)</th>
-            <th>@Html.DisplayName("Tipo de Ingreso")</th>
-            <th>@Html.DisplayName("Tipo de Deducción")</th>
-            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().TipoTransaccion)</th>
-            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Fecha)</th>
-            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Monto)</th>
-            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Estado)</th>
+            <th>Empleado</th>
+            <th>Tipo de Ingreso</th>
+            <th>Tipo de Deducción</th>
+            <th>Tipo de Transacción</th>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Estado</th>
             <th></th>
         </tr>
     </thead>
@@ -27,8 +27,19 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.Empleado.Nombre)</td>
+                <!-- Empleado -->
+                <td>
+                    @if (item.Empleado != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.Empleado.Nombre)
+                    }
+                    else
+                    {
+                        <span>No especificado</span>
+                    }
+                </td>
 
+                <!-- Tipo de Ingreso -->
                 <td>
                     @if (item.TipoIngreso != null)
                     {
@@ -40,6 +51,7 @@
                     }
                 </td>
 
+                <!-- Tipo de Deducción -->
                 <td>
                     @if (item.TipoDeduccion != null)
                     {
@@ -51,10 +63,19 @@
                     }
                 </td>
 
+                <!-- Tipo de Transacción -->
                 <td>@Html.DisplayFor(modelItem => item.TipoTransaccion)</td>
+
+                <!-- Fecha -->
                 <td>@Html.DisplayFor(modelItem => item.Fecha)</td>
+
+                <!-- Monto -->
                 <td>@Html.DisplayFor(modelItem => item.Monto)</td>
+
+                <!-- Estado -->
                 <td>@Html.DisplayFor(modelItem => item.Estado)</td>
+
+                <!-- Acciones -->
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Editar</a> |
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Detalles</a> |

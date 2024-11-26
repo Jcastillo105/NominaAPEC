@@ -11,14 +11,14 @@ namespace NominaAPEC.Models
         [Required]
         [Display(Name = "Cédula")]
         [CedulaValidation(ErrorMessage = "La cédula ingresada no es válida.")]
-        public string Cedula { get; set; }
+        public string Cedula { get; set; } = string.Empty;
 
         [Required]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
-        public string Departamento { get; set; }
+        public string Departamento { get; set; } = string.Empty;
 
-        public string Puesto { get; set; }
+        public string Puesto { get; set; } = string.Empty;
 
         [Required]
         [Display(Name = "Salario Mensual")]
@@ -28,19 +28,16 @@ namespace NominaAPEC.Models
         public int NominaId { get; set; }
     }
 
-    // Agregar una clase de validación personalizada para la cédula
+    // Validación personalizada de la cédula
     public class CedulaValidationAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
         {
-            if (value != null && ValidaCedula(value.ToString()))
+            if (value != null && ValidaCedula(value.ToString()!))
             {
-                return ValidationResult.Success;
+                return ValidationResult.Success!;
             }
-            else
-            {
-                return new ValidationResult(ErrorMessage);
-            }
+            return new ValidationResult(ErrorMessage);
         }
 
         private bool ValidaCedula(string pCedula)
@@ -59,7 +56,8 @@ namespace NominaAPEC.Models
                 if (vCalculo < 10)
                     vnTotal += vCalculo;
                 else
-                    vnTotal += Int32.Parse(vCalculo.ToString().Substring(0, 1)) + Int32.Parse(vCalculo.ToString().Substring(1, 1));
+                    vnTotal += Int32.Parse(vCalculo.ToString().Substring(0, 1)) +
+                               Int32.Parse(vCalculo.ToString().Substring(1, 1));
             }
 
             return vnTotal % 10 == 0;

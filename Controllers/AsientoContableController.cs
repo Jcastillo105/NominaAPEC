@@ -17,11 +17,10 @@ namespace NominaAPEC.Controllers
         }
 
         // GET: AsientoContable
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             try
             {
-                // Aquí deberías implementar la lógica para obtener los asientos desde el servicio si está disponible.
                 List<AsientoContable> asientos = new List<AsientoContable>(); // Simulación
                 return View(asientos);
             }
@@ -33,7 +32,7 @@ namespace NominaAPEC.Controllers
         }
 
         // GET: AsientoContable/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -43,8 +42,7 @@ namespace NominaAPEC.Controllers
 
             try
             {
-                // Implementa la lógica para obtener los detalles del asiento desde el servicio si está disponible.
-                AsientoContable asiento = null; // Simulación
+                AsientoContable? asiento = null; // Simulación
                 return View(asiento);
             }
             catch (Exception ex)
@@ -78,7 +76,7 @@ namespace NominaAPEC.Controllers
 
                 if (result > 0)
                 {
-                    Console.WriteLine("Asiento contable registrado exitosamente.");
+                    TempData["Message"] = "Asiento registrado exitosamente con ID: " + result;
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -95,8 +93,9 @@ namespace NominaAPEC.Controllers
             return View(asiento);
         }
 
+
         // GET: AsientoContable/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -106,8 +105,7 @@ namespace NominaAPEC.Controllers
 
             try
             {
-                // Implementa la lógica para obtener los detalles del asiento a editar si está disponible.
-                AsientoContable asiento = null; // Simulación
+                AsientoContable? asiento = null; // Simulación
                 return View(asiento);
             }
             catch (Exception ex)
@@ -120,7 +118,7 @@ namespace NominaAPEC.Controllers
         // POST: AsientoContable/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IdAuxiliar,Descripcion,CuentaDB,CuentaCR,Monto")] AsientoContable asiento)
+        public IActionResult Edit(int id, [Bind("Id,IdAuxiliar,Descripcion,CuentaDB,CuentaCR,Monto")] AsientoContable asiento)
         {
             if (id != asiento.Id)
             {
@@ -134,7 +132,6 @@ namespace NominaAPEC.Controllers
 
             try
             {
-                // Implementa la lógica para actualizar el asiento si el servicio lo soporta.
                 Console.WriteLine("Edición de asiento completada.");
                 return RedirectToAction(nameof(Index));
             }
@@ -148,7 +145,7 @@ namespace NominaAPEC.Controllers
         }
 
         // GET: AsientoContable/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
@@ -158,8 +155,7 @@ namespace NominaAPEC.Controllers
 
             try
             {
-                // Implementa la lógica para obtener el asiento a eliminar si está disponible.
-                AsientoContable asiento = null; // Simulación
+                AsientoContable? asiento = null; // Simulación
                 return View(asiento);
             }
             catch (Exception ex)
@@ -172,11 +168,10 @@ namespace NominaAPEC.Controllers
         // POST: AsientoContable/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
             try
             {
-                // Implementa la lógica para eliminar el asiento si el servicio lo soporta.
                 Console.WriteLine("Asiento contable eliminado.");
                 return RedirectToAction(nameof(Index));
             }

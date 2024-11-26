@@ -9,7 +9,7 @@
 <h4>Asiento Contable</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -20,45 +20,39 @@
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
 
-            <!-- Empleado -->
+            <!-- ID Auxiliar -->
             <div class="form-group">
-                <label asp-for="EmpleadoId" class="control-label">Empleado</label>
-                <select asp-for="EmpleadoId" class="form-control" asp-items="ViewBag.EmpleadoId">
-                    <option value="">Seleccione un empleado</option>
-                </select>
-                <span asp-validation-for="EmpleadoId" class="text-danger"></span>
+                <label asp-for="IdAuxiliar" class="control-label">ID Auxiliar</label>
+                <input asp-for="IdAuxiliar" class="form-control" />
+                <span asp-validation-for="IdAuxiliar" class="text-danger"></span>
             </div>
 
-            <!-- Cuenta -->
+            <!-- Cuenta DB -->
             <div class="form-group">
-                <label asp-for="Cuenta" class="control-label">Cuenta</label>
-                <input asp-for="Cuenta" class="form-control" />
-                <span asp-validation-for="Cuenta" class="text-danger"></span>
+                <label asp-for="CuentaDB" class="control-label">Cuenta DB</label>
+                <input asp-for="CuentaDB" class="form-control" />
+                <span asp-validation-for="CuentaDB" class="text-danger"></span>
             </div>
 
-            <!-- Tipo de Movimiento -->
+            <!-- Cuenta CR -->
             <div class="form-group">
-                <label asp-for="TipoMovimiento" class="control-label">Tipo de Movimiento</label>
-                <select asp-for="TipoMovimiento" class="form-control">
-                    <option value="">Seleccione el tipo de movimiento</option>
-                    <option value="DB">Débito</option>
-                    <option value="CR">Crédito</option>
-                </select>
-                <span asp-validation-for="TipoMovimiento" class="text-danger"></span>
+                <label asp-for="CuentaCR" class="control-label">Cuenta CR</label>
+                <input asp-for="CuentaCR" class="form-control" />
+                <span asp-validation-for="CuentaCR" class="text-danger"></span>
             </div>
 
             <!-- Fecha del Asiento -->
             <div class="form-group">
-                <label asp-for="FechaAsiento" class="control-label">Fecha y Hora del Asiento</label>
-                <input asp-for="FechaAsiento" type="datetime-local" class="form-control" />
+                <label asp-for="FechaAsiento" class="control-label">Fecha del Asiento</label>
+                <input asp-for="FechaAsiento" type="date" class="form-control" />
                 <span asp-validation-for="FechaAsiento" class="text-danger"></span>
             </div>
 
-            <!-- Monto del Asiento -->
+            <!-- Monto -->
             <div class="form-group">
-                <label asp-for="MontoAsiento" class="control-label">Monto del Asiento</label>
-                <input asp-for="MontoAsiento" class="form-control" />
-                <span asp-validation-for="MontoAsiento" class="text-danger"></span>
+                <label asp-for="Monto" class="control-label">Monto del Asiento</label>
+                <input asp-for="Monto" class="form-control" />
+                <span asp-validation-for="Monto" class="text-danger"></span>
             </div>
 
             <!-- Estado -->
@@ -70,13 +64,10 @@
             <!-- Botón de Crear -->
             <div class="form-group">
                 <input type="submit" value="Crear" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
 </div>
 
 @section Scripts {
