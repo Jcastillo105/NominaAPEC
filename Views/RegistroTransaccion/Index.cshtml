@@ -19,6 +19,7 @@
             <th>Tipo de Transacción</th>
             <th>Fecha</th>
             <th>Monto</th>
+            <th>IdAsiento</th>
             <th>Estado</th>
             <th></th>
         </tr>
@@ -71,6 +72,9 @@
 
                 <!-- Monto -->
                 <td>@Html.DisplayFor(modelItem => item.Monto)</td>
+
+                <!-- IdAsiento -->
+                <td>@Html.DisplayFor(modelItem => item.IdAsiento)</td>
 
                 <!-- Estado -->
                 <td>@Html.DisplayFor(modelItem => item.Estado)</td>

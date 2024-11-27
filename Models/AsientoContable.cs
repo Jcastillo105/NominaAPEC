@@ -36,5 +36,14 @@ namespace NominaAPEC.Models
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
         public bool Estado { get; set; }
+
+        // Nuevas propiedades para integración con Registro de Transacciones
+        [Required(ErrorMessage = "El ID del empleado es obligatorio.")]
+        [Display(Name = "ID del Empleado")]
+        public int EmpleadoId { get; set; }
+
+        [Required(ErrorMessage = "El tipo de transacción es obligatorio.")]
+        [Display(Name = "Tipo de Transacción")]
+        public string TipoTransaccion { get; set; } = string.Empty;
     }
 }

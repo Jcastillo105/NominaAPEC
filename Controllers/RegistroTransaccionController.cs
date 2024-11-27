@@ -49,17 +49,6 @@ namespace NominaAPEC.Controllers
                 return NotFound();
             }
 
-            Console.WriteLine("----- Debugging de los valores obtenidos en Details -----");
-            Console.WriteLine($"ID: {registroTransaccion.Id}");
-            Console.WriteLine($"Empleado: {registroTransaccion.Empleado?.Nombre}");
-            Console.WriteLine($"Tipo de Ingreso: {registroTransaccion.TipoIngreso?.Nombre}");
-            Console.WriteLine($"Tipo de Deducción: {registroTransaccion.TipoDeduccion?.Nombre}");
-            Console.WriteLine($"Tipo de Transacción: {registroTransaccion.TipoTransaccion}");
-            Console.WriteLine($"Fecha: {registroTransaccion.Fecha}");
-            Console.WriteLine($"Monto: {registroTransaccion.Monto}");
-            Console.WriteLine($"Estado: {registroTransaccion.Estado}");
-            Console.WriteLine("--------------------------------------------------------");
-
             return View(registroTransaccion);
         }
 
@@ -89,8 +78,10 @@ namespace NominaAPEC.Controllers
 
             try
             {
+                // Agregar la lógica de registro automático
                 _context.Add(registroTransaccion);
                 await _context.SaveChangesAsync();
+
                 Console.WriteLine("Registro de transacción creado exitosamente.");
                 return RedirectToAction(nameof(Index));
             }
@@ -153,18 +144,6 @@ namespace NominaAPEC.Controllers
                 Console.WriteLine("Registro de transacción editado exitosamente.");
                 return RedirectToAction(nameof(Index));
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RegistroTransaccionExists(registroTransaccion.Id))
-                {
-                    Console.WriteLine("Error de concurrencia en la edición del registro de transacción.");
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al editar el registro de transacción: {ex.Message}");
@@ -226,11 +205,6 @@ namespace NominaAPEC.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool RegistroTransaccionExists(int id)
-        {
-            return _context.RegistroTransacciones.Any(e => e.Id == id);
         }
 
         private void CargarListas(RegistroTransaccion? registroTransaccion = null)

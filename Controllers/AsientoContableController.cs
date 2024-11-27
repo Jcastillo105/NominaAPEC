@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NominaAPEC.Data; // Incluir el contexto de base de datos
 using NominaAPEC.Models;
 using AsientoContableService; // Namespace actualizado
 
@@ -9,10 +11,12 @@ namespace NominaAPEC.Controllers
 {
     public class AsientoContableController : Controller
     {
+        private readonly MyDbContext _context;
         private readonly AsientoContableServiceSoapClient _client;
 
-        public AsientoContableController()
+        public AsientoContableController(MyDbContext context)
         {
+            _context = context;
             _client = new AsientoContableServiceSoapClient(AsientoContableServiceSoapClient.EndpointConfiguration.AsientoContableServiceSoap);
         }
 
@@ -55,33 +59,63 @@ namespace NominaAPEC.Controllers
         // GET: AsientoContable/Create
         public IActionResult Create()
         {
+            // Cargar lista de empleados para el dropdown
+            ViewBag.EmpleadoId = new SelectList(_context.Empleados, "Id", "Nombre");
+
             return View();
         }
 
         // POST: AsientoContable/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAuxiliar,Descripcion,CuentaDB,CuentaCR,Monto")] AsientoContable asiento)
+        public async Task<IActionResult> Create([Bind("IdAuxiliar,Descripcion,CuentaDB,CuentaCR,Monto,EmpleadoId,TipoTransaccion")] AsientoContable asiento)
         {
             if (!ModelState.IsValid)
             {
+                // Recargar lista de empleados en caso de error
+                ViewBag.EmpleadoId = new SelectList(_context.Empleados, "Id", "Nombre");
                 return View(asiento);
             }
 
             try
             {
+                Console.WriteLine("Iniciando registro del asiento contable...");
+                Console.WriteLine($"Datos del asiento: Auxiliar={asiento.IdAuxiliar}, Descripción={asiento.Descripcion}, DB={asiento.CuentaDB}, CR={asiento.CuentaCR}, Monto={asiento.Monto}");
+
                 // Llamar al WS para registrar el asiento
                 var response = await _client.RegistrarAsientoAsync(asiento.IdAuxiliar, asiento.Descripcion, asiento.CuentaDB, asiento.CuentaCR, asiento.Monto);
-                int result = response.Body.RegistrarAsientoResult; // Extraer el resultado de la respuesta
+                int idAsiento = response.Body.RegistrarAsientoResult;
 
-                if (result > 0)
+                Console.WriteLine($"Respuesta del servicio: IdAsiento={idAsiento}");
+
+                if (idAsiento > 0)
                 {
-                    TempData["Message"] = "Asiento registrado exitosamente con ID: " + result;
+                    Console.WriteLine("Asiento registrado correctamente. Procediendo con la transacción...");
+
+                    // Registrar la transacción en la tabla de RegistroTransacciones
+                    var transaccion = new RegistroTransaccion
+                    {
+                        EmpleadoId = asiento.EmpleadoId,
+                        TipoTransaccion = asiento.TipoTransaccion,
+                        Fecha = DateTime.Now,
+                        Monto = asiento.Monto,
+                        Estado = true,
+                        IdAsiento = idAsiento
+                    };
+
+                    Console.WriteLine($"Datos de la transacción: {transaccion.EmpleadoId}, {transaccion.TipoTransaccion}, {transaccion.Fecha}, {transaccion.Monto}, {transaccion.IdAsiento}");
+
+                    // Guardar en la base de datos
+                    _context.RegistroTransacciones.Add(transaccion);
+                    await _context.SaveChangesAsync();
+
+                    TempData["Message"] = $"Asiento y transacción registrados exitosamente con ID Asiento: {idAsiento}.";
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Error al registrar el asiento contable.");
+                    Console.WriteLine("El servicio devolvió un ID inválido.");
+                    ModelState.AddModelError("", "Error al registrar el asiento contable en el servicio externo.");
                 }
             }
             catch (Exception ex)
@@ -90,9 +124,10 @@ namespace NominaAPEC.Controllers
                 ModelState.AddModelError("", "Ocurrió un error al registrar el asiento contable.");
             }
 
+            // Recargar lista de empleados en caso de error
+            ViewBag.EmpleadoId = new SelectList(_context.Empleados, "Id", "Nombre");
             return View(asiento);
         }
-
 
         // GET: AsientoContable/Edit/5
         public IActionResult Edit(int? id)
