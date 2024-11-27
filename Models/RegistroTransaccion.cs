@@ -7,40 +7,50 @@ namespace NominaAPEC.Models
     public class RegistroTransaccion
     {
         [Key]
+        [Column("id")] // Mapeo explícito
         public int Id { get; set; }
 
         [Required]
         [Display(Name = "Empleado")]
+        [Column("empleadoid")] // Mapeo explícito
         public int EmpleadoId { get; set; }
 
         [ForeignKey("EmpleadoId")]
-        public Empleado? Empleado { get; set; } // Se marca como anulable
+        public Empleado? Empleado { get; set; } // Relación con la tabla Empleados
 
-        // Relación con TipoIngreso
-        public int? TipoIngresoId { get; set; } // Se marca como anulable
+        [Column("tipoingresoid")]
+        public int? TipoIngresoId { get; set; }
+
         [ForeignKey("TipoIngresoId")]
-        public TipoIngreso? TipoIngreso { get; set; } // Se marca como anulable
+        public TipoIngreso? TipoIngreso { get; set; }
 
-        // Relación con TipoDeduccion
-        public int? TipoDeduccionId { get; set; } // Se marca como anulable
+        [Column("tipodeduccionid")]
+        public int? TipoDeduccionId { get; set; }
+
         [ForeignKey("TipoDeduccionId")]
-        public TipoDeduccion? TipoDeduccion { get; set; } // Se marca como anulable
+        public TipoDeduccion? TipoDeduccion { get; set; }
 
         [Required]
         [Display(Name = "Tipo de Transacción")]
-        public string TipoTransaccion { get; set; } = string.Empty; // Se inicializa como vacío
+        [Column("tipotransaccion", TypeName = "text")]
+        public string TipoTransaccion { get; set; } = string.Empty;
 
         [Required]
+        [Column("fecha", TypeName = "timestamp without time zone")]
         public DateTime Fecha { get; set; }
 
         [Required]
+        [Column("monto", TypeName = "numeric")]
         public decimal Monto { get; set; }
 
         [Required]
+        [Column("estado", TypeName = "smallint")]
         public bool Estado { get; set; }
 
-        // Nuevo campo para el ID del asiento contable
+        // Aquí se almacena el ID del asiento contable que devuelva la API externa
         [Required]
-        public int IdAsiento { get; set; } // Relación con el asiento contable
+        [Display(Name = "ID del Asiento Contable")]
+        [Column("idasiento")]
+        public int IdAsiento { get; set; }
     }
 }

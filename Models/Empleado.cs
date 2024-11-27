@@ -7,31 +7,33 @@ namespace NominaAPEC.Models
     public class Empleado
     {
         [Key]
+        [Column("id")] // Mapeo explícito a 'id' en PostgreSQL
         public int Id { get; set; }
 
         [Required]
         [Display(Name = "Cédula")]
         [CedulaValidation(ErrorMessage = "La cédula ingresada no es válida.")]
-        [Column(TypeName = "text")] // PostgreSQL usa 'text' para cadenas largas
+        [Column("cedula", TypeName = "text")] // 'cedula' en PostgreSQL
         public string Cedula { get; set; } = string.Empty;
 
         [Required]
-        [Column(TypeName = "text")] // PostgreSQL usa 'text' para cadenas largas
+        [Column("nombre", TypeName = "text")] // 'nombre' en PostgreSQL
         public string Nombre { get; set; } = string.Empty;
 
-        [Column(TypeName = "text")] // PostgreSQL usa 'text' para cadenas largas
+        [Column("departamento", TypeName = "text")] // 'departamento' en PostgreSQL
         public string Departamento { get; set; } = string.Empty;
 
-        [Column(TypeName = "text")] // PostgreSQL usa 'text' para cadenas largas
+        [Column("puesto", TypeName = "text")] // 'puesto' en PostgreSQL
         public string Puesto { get; set; } = string.Empty;
 
         [Required]
         [Display(Name = "Salario Mensual")]
-        [Column(TypeName = "numeric")] // PostgreSQL usa 'numeric' para valores decimales
+        [Column("salariomensual", TypeName = "numeric")] // 'salariomensual' en PostgreSQL
         [Range(0, double.MaxValue, ErrorMessage = "El salario mensual debe ser un número positivo.")]
         public decimal SalarioMensual { get; set; }
 
         [Required]
+        [Column("nominaid")] // 'nominaid' en PostgreSQL
         public int NominaId { get; set; }
     }
 

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NominaAPEC.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20241126235600_InitialMigrationForPostgres")]
-    partial class InitialMigrationForPostgres
+    [Migration("20241127011200_UpdateTipoIngreso")]
+    partial class UpdateTipoIngreso
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,76 +57,92 @@ namespace NominaAPEC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AsientosContables");
+                    b.ToTable("asientoscontables", (string)null);
                 });
 
             modelBuilder.Entity("NominaAPEC.Models.Empleado", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Cedula")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("cedula");
 
                     b.Property<string>("Departamento")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("departamento");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nombre");
 
                     b.Property<int>("NominaId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("nominaid");
 
                     b.Property<string>("Puesto")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("puesto");
 
                     b.Property<decimal>("SalarioMensual")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("salariomensual");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Empleados");
+                    b.ToTable("empleados", (string)null);
                 });
 
             modelBuilder.Entity("NominaAPEC.Models.RegistroTransaccion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("EmpleadoId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("empleadoid");
 
-                    b.Property<bool>("Estado")
-                        .HasColumnType("boolean");
+                    b.Property<short>("Estado")
+                        .HasColumnType("smallint")
+                        .HasColumnName("estado");
 
                     b.Property<DateTime>("Fecha")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("fecha");
 
                     b.Property<int>("IdAsiento")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("idasiento");
 
                     b.Property<decimal>("Monto")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("monto");
 
                     b.Property<int?>("TipoDeduccionId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("tipodeduccionid");
 
                     b.Property<int?>("TipoIngresoId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("tipoingresoid");
 
                     b.Property<string>("TipoTransaccion")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tipotransaccion");
 
                     b.HasKey("Id");
 
@@ -136,53 +152,65 @@ namespace NominaAPEC.Migrations
 
                     b.HasIndex("TipoIngresoId");
 
-                    b.ToTable("RegistroTransacciones");
+                    b.ToTable("registrotransacciones", (string)null);
                 });
 
             modelBuilder.Entity("NominaAPEC.Models.TipoDeduccion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("DependeDeSalario")
-                        .HasColumnType("boolean");
+                    b.Property<short>("DependeDeSalario")
+                        .HasColumnType("smallint")
+                        .HasColumnName("dependedesalario");
 
-                    b.Property<bool>("Estado")
-                        .HasColumnType("boolean");
+                    b.Property<short>("Estado")
+                        .HasColumnType("smallint")
+                        .HasColumnName("estado");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nombre");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TiposDeduccion");
+                    b.ToTable("tiposdeduccion", (string)null);
                 });
 
             modelBuilder.Entity("NominaAPEC.Models.TipoIngreso", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("DependeDeSalario")
-                        .HasColumnType("boolean");
+                    b.Property<short>("DependeDeSalario")
+                        .HasColumnType("smallint")
+                        .HasColumnName("dependedesalario");
 
-                    b.Property<bool>("Estado")
-                        .HasColumnType("boolean");
+                    b.Property<short>("Estado")
+                        .HasColumnType("smallint")
+                        .HasColumnName("estado");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nombre");
+
+                    b.Property<string>("Trial710")
+                        .HasColumnType("character")
+                        .HasColumnName("trial710");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TiposIngreso");
+                    b.ToTable("tiposingreso", (string)null);
                 });
 
             modelBuilder.Entity("NominaAPEC.Models.RegistroTransaccion", b =>

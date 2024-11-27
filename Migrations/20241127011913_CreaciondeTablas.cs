@@ -5,7 +5,7 @@
 namespace NominaAPEC.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigrationForPostgres : Migration
+    public partial class CreaciondeTablas : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
