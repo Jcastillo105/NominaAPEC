@@ -70,7 +70,7 @@ namespace NominaAPEC.Controllers
         // POST: AsientoContable/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAuxiliar,Descripcion,CuentaDB,CuentaCR,Monto,EmpleadoId,TipoTransaccion")] AsientoContable asiento)
+        public async Task<IActionResult> Create([Bind("IdAuxiliar,Descripcion,CuentaDB,CuentaCR,Monto,EmpleadoId,TipoTransaccion,TipoIngresoId,TipoDeduccionId")] AsientoContable asiento)
         {
             if (!ModelState.IsValid)
             {

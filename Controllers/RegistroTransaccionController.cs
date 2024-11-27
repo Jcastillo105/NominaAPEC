@@ -103,7 +103,11 @@ namespace NominaAPEC.Controllers
                 return NotFound();
             }
 
-            var registroTransaccion = await _context.RegistroTransacciones.FindAsync(id);
+            var registroTransaccion = await _context.RegistroTransacciones
+                .Include(rt => rt.TipoIngreso)
+                .Include(rt => rt.TipoDeduccion)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
             if (registroTransaccion == null)
             {
                 Console.WriteLine($"Error en Edit: No se encontró el registro con ID {id}.");
@@ -139,8 +143,19 @@ namespace NominaAPEC.Controllers
 
             try
             {
+                // Asegúrate de actualizar los valores correctamente para TipoIngreso y TipoDeduccion
+                if (registroTransaccion.TipoTransaccion == "Ingreso")
+                {
+                    registroTransaccion.TipoDeduccionId = null; // Si es ingreso, no debe haber deducción
+                }
+                else if (registroTransaccion.TipoTransaccion == "Deducción")
+                {
+                    registroTransaccion.TipoIngresoId = null; // Si es deducción, no debe haber ingreso
+                }
+
                 _context.Update(registroTransaccion);
                 await _context.SaveChangesAsync();
+
                 Console.WriteLine("Registro de transacción editado exitosamente.");
                 return RedirectToAction(nameof(Index));
             }
@@ -212,11 +227,7 @@ namespace NominaAPEC.Controllers
             ViewBag.EmpleadoId = new SelectList(_context.Empleados, "Id", "Nombre", registroTransaccion?.EmpleadoId);
             ViewBag.TipoIngresoId = new SelectList(_context.TiposIngreso, "Id", "Nombre", registroTransaccion?.TipoIngresoId);
             ViewBag.TipoDeduccionId = new SelectList(_context.TiposDeduccion, "Id", "Nombre", registroTransaccion?.TipoDeduccionId);
-            ViewBag.TipoTransaccion = new SelectList(new[]
-            {
-                new { Value = "Ingreso", Text = "Ingreso" },
-                new { Value = "Deducción", Text = "Deducción" }
-            }, "Value", "Text", registroTransaccion?.TipoTransaccion);
+            ViewBag.TipoTransaccion = new SelectList(new[] { "Ingreso", "Deducción" }, registroTransaccion?.TipoTransaccion);
         }
     }
 }
