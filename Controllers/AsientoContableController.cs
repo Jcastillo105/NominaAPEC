@@ -61,6 +61,8 @@ namespace NominaAPEC.Controllers
         {
             // Cargar lista de empleados para el dropdown
             ViewBag.EmpleadoId = new SelectList(_context.Empleados, "Id", "Nombre");
+            ViewBag.TiposIngreso = new SelectList(_context.TiposIngreso.Where(t => t.Estado), "Id", "Nombre");
+            ViewBag.TiposDeduccion = new SelectList(_context.TiposDeduccion.Where(t => t.Estado), "Id", "Nombre");
 
             return View();
         }
@@ -74,6 +76,9 @@ namespace NominaAPEC.Controllers
             {
                 // Recargar lista de empleados en caso de error
                 ViewBag.EmpleadoId = new SelectList(_context.Empleados, "Id", "Nombre");
+                ViewBag.TiposIngreso = new SelectList(_context.TiposIngreso.Where(t => t.Estado), "Id", "Nombre", asiento.TipoIngresoId);
+                ViewBag.TiposDeduccion = new SelectList(_context.TiposDeduccion.Where(t => t.Estado), "Id", "Nombre", asiento.TipoDeduccionId);
+
                 return View(asiento);
             }
 
@@ -97,13 +102,15 @@ namespace NominaAPEC.Controllers
                     {
                         EmpleadoId = asiento.EmpleadoId,
                         TipoTransaccion = asiento.TipoTransaccion,
+                        TipoIngresoId = asiento.TipoTransaccion == "Ingreso" ? asiento.TipoIngresoId : null, // Solo si es ingreso
+                        TipoDeduccionId = asiento.TipoTransaccion == "Deducción" ? asiento.TipoDeduccionId : null, // Solo si es deducción
                         Fecha = DateTime.Now,
                         Monto = asiento.Monto,
                         Estado = true,
                         IdAsiento = idAsiento
                     };
 
-                    Console.WriteLine($"Datos de la transacción: {transaccion.EmpleadoId}, {transaccion.TipoTransaccion}, {transaccion.Fecha}, {transaccion.Monto}, {transaccion.IdAsiento}");
+                    Console.WriteLine($"Datos de la transacción: {transaccion.EmpleadoId}, {transaccion.TipoTransaccion}, {transaccion.Fecha}, {transaccion.Monto}, {transaccion.IdAsiento}, {transaccion.TipoIngresoId}, {transaccion.TipoDeduccionId}");
 
                     // Guardar en la base de datos
                     _context.RegistroTransacciones.Add(transaccion);

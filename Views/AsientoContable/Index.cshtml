@@ -28,6 +28,8 @@
             <th>@Html.DisplayNameFor(model => model.First().FechaAsiento)</th>
             <th>@Html.DisplayNameFor(model => model.First().Monto)</th>
             <th>@Html.DisplayNameFor(model => model.First().Estado)</th>
+            <th>Tipo de Ingreso</th>
+            <th>Tipo de Deducción</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -49,6 +51,26 @@
                     else
                     {
                         <span class="badge badge-secondary">Inactivo</span>
+                    }
+                </td>
+                <td>
+                    @if (item.TipoIngresoId != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.TipoIngresoId)
+                    }
+                    else
+                    {
+                        <span>No aplica</span>
+                    }
+                </td>
+                <td>
+                    @if (item.TipoDeduccionId != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.TipoDeduccionId)
+                    }
+                    else
+                    {
+                        <span>No aplica</span>
                     }
                 </td>
                 <td>

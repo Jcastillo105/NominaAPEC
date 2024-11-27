@@ -45,5 +45,19 @@ namespace NominaAPEC.Models
         [Required(ErrorMessage = "El tipo de transacción es obligatorio.")]
         [Display(Name = "Tipo de Transacción")]
         public string TipoTransaccion { get; set; } = string.Empty;
+
+        // Relación con TipoIngreso
+        [Display(Name = "Tipo de Ingreso")]
+        public int? TipoIngresoId { get; set; }
+
+        [ForeignKey("TipoIngresoId")]
+        public TipoIngreso? TipoIngreso { get; set; }
+
+        // Relación con TipoDeduccion
+        [Display(Name = "Tipo de Deducción")]
+        public int? TipoDeduccionId { get; set; }
+
+        [ForeignKey("TipoDeduccionId")]
+        public TipoDeduccion? TipoDeduccion { get; set; }
     }
 }
