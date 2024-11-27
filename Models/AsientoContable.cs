@@ -10,6 +10,7 @@ namespace NominaAPEC.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "La descripción es obligatoria.")]
+        [Column(TypeName = "text")] // Cambia de longtext a text
         public string Descripcion { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El auxiliar es obligatorio.")]

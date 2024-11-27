@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NominaAPEC.Models
 {
@@ -11,27 +12,33 @@ namespace NominaAPEC.Models
         [Required]
         [Display(Name = "Cédula")]
         [CedulaValidation(ErrorMessage = "La cédula ingresada no es válida.")]
+        [Column(TypeName = "text")] // PostgreSQL usa 'text' para cadenas largas
         public string Cedula { get; set; } = string.Empty;
 
         [Required]
+        [Column(TypeName = "text")] // PostgreSQL usa 'text' para cadenas largas
         public string Nombre { get; set; } = string.Empty;
 
+        [Column(TypeName = "text")] // PostgreSQL usa 'text' para cadenas largas
         public string Departamento { get; set; } = string.Empty;
 
+        [Column(TypeName = "text")] // PostgreSQL usa 'text' para cadenas largas
         public string Puesto { get; set; } = string.Empty;
 
         [Required]
         [Display(Name = "Salario Mensual")]
+        [Column(TypeName = "numeric")] // PostgreSQL usa 'numeric' para valores decimales
         [Range(0, double.MaxValue, ErrorMessage = "El salario mensual debe ser un número positivo.")]
         public decimal SalarioMensual { get; set; }
 
+        [Required]
         public int NominaId { get; set; }
     }
 
     // Validación personalizada de la cédula
     public class CedulaValidationAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             if (value != null && ValidaCedula(value.ToString()!))
             {

@@ -38,5 +38,9 @@ namespace NominaAPEC.Models
 
         [Required]
         public bool Estado { get; set; }
+
+        // Nuevo campo para el ID del asiento contable
+        [Required]
+        public int IdAsiento { get; set; } // Relación con el asiento contable
     }
 }

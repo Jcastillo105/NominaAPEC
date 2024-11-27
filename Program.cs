@@ -1,17 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql;
+using Npgsql.EntityFrameworkCore.PostgreSQL; // Cambiado a Npgsql
 using NominaAPEC.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Add DbContext with MySQL connection
-
-
-
+// Add DbContext with PostgreSQL connection
 builder.Services.AddDbContext<MyDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("MySqlConnection"),
-    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySqlConnection"))));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
 // Add MVC services
 builder.Services.AddControllersWithViews();
